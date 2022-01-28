@@ -1,0 +1,5 @@
+26 January 2022 01:07:05 - Dev Nordace: "shipping update not scheduled. likely reason: identical shipping data submitted for processing."
+26 January 2022 01:09:40 - Dev Nordace: "Shipping update not scheduled. Likely reason: identical shipping data submitted for processing."
+26 January 2022 01:15:33 - Dev Nordace: "Shipping update scheduled."
+26 January 2022 04:35:52 - Dev Nordace: "Shipping update scheduled."
+27 January 2022 10:01:26 - Dev Nordace: "Shipping update scheduled."
