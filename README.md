@@ -46,8 +46,7 @@ When uploading correctly formatted CSV shipping files for bulk order updates, th
 
 If the shipping update file is successfully uploaded, using the correct format, it will be saved to the server. Once saved, it will be read and its contents displayed below the file upload section so that said contents can be reviewed for accuracy prior to submission.
 
-Once you're satisfied that the content is correct, simply click on the Submit CSV for processing, located at the top right of the shipment data table. A remote update request will now be sent to the store/shop in question, and the order update process will be scheduled via Action Scheduler in the
-backend of the store/shop in question.
+Once you're satisfied that the content is correct, simply click on the Submit CSV for processing, located at the top right of the shipment data table. A remote update request will now be sent to the store/shop in question, and the order update process will be scheduled via Action Scheduler in the backend of the store/shop in question.
 
 ## Logs
 

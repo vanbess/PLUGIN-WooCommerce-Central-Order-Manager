@@ -171,10 +171,32 @@ trait SBWC_OM_JS
                         'store_id': store_id,
                         'csv_name': csv_name
                     }
+
                     $.post(ajaxurl, data, function(response) {
                         // console.log(response)
                         alert(response);
                         location.reload();
+                    });
+
+                });
+
+                // ****************************************
+                // RETRIEVE STORE SHIPMENT COMPANY DETAILS
+                // ****************************************
+                $('#sbwc-om-retrieve-ship-cos').on('click', function(e) {
+                    e.preventDefault();
+
+                    var data = {
+                        '_ajax_nonce': $(this).data('nonce'),
+                        'store_id': $(this).data('store'),
+                        'action': 'sbwc_om_retrieve_shipping_cos',
+                    }
+
+                    $.post(ajaxurl, data, function(response) {
+                        console.log(response);
+                        
+                        // alert(response);
+                        // location.reload();
                     });
 
                 });

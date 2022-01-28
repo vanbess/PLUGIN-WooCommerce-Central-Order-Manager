@@ -111,4 +111,40 @@ trait SBWC_OM_AJAX
 
     wp_die();
   }
+
+  /**
+   * Retrieve shop shipping company data
+   *
+   * @return void
+   */
+  public static function sbwc_om_retrieve_shipping_cos()
+  {
+
+    check_ajax_referer('sbwc fetch store shipping cos');
+
+    // retrieve store id
+    $store_id = $_POST['store_id'];
+
+    // retrieve store connection data
+    $store_url       = get_post_meta($store_id, 'store_url', true);
+    $store_cs_key    = get_post_meta($store_id, 'store_cs_key', true);
+    $store_cs_secret = get_post_meta($store_id, 'store_cs_secret', true);
+
+    // setup request url
+    $request_url = "$store_url/wp-json/wc/v3/retrieve_ship_cos?consumer_key=$store_cs_key&consumer_secret=$store_cs_secret";
+
+    // remote get
+    $response = wp_remote_get($request_url, [
+      'headers' => ['Content-Type' => 'application/json'],
+      'timeout' => 30,
+    ]);
+
+    // retrieve order data
+    $ship_co_data = json_decode($response['body'], true);
+
+    wp_send_json($ship_co_data);
+
+
+    wp_die();
+  }
 }

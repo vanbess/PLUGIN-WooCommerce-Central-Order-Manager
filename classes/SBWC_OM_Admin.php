@@ -42,6 +42,11 @@ class SBWC_OM_Admin
         // schedule shipping csv processing via AJAX
         add_action('wp_ajax_sbwc_om_process_ship_csv', [__CLASS__, 'sbwc_om_process_ship_csv']);
         add_action('wp_ajax_nopriv_sbwc_om_process_ship_csv', [__CLASS__, 'sbwc_om_process_ship_csv']);
+        
+        // retrieve store shipping companies via AJAX
+        add_action('wp_ajax_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
+        add_action('wp_ajax_nopriv_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
+
     }
 
     /**

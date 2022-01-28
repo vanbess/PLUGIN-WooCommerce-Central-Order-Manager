@@ -28,6 +28,7 @@ trait SBWC_OM_CPT_Metabox
             <ul>
                 <li><a href="#sbwc-om-orders-list"><b><?php _e('Shop Orders', 'sbwc-om'); ?></b></a></li>
                 <li><a href="#sbwc-om-upload-csv"><b><?php _e('Upload Shipping CSV', 'sbwc-om'); ?></b></a></li>
+                <li><a href="#sbwc-om-shop-shipment-tracking"><b><?php _e('Store Shipment Companies', 'sbwc-om'); ?></b></a></li>
             </ul>
 
             <!-- *********** -->
@@ -447,6 +448,28 @@ trait SBWC_OM_CPT_Metabox
                     </div><!-- #sbwc-om-csv-file-data ends -->
                 <?php endif; ?>
             </div><!-- #sbwc-om-upload-csv ends -->
+
+            <!-- ******************************** -->
+            <!-- shop shipment tracking companies -->
+            <!-- ******************************** -->
+            <div id="sbwc-om-shop-shipment-tracking">
+
+                <p>
+                    <b>
+                        <i>
+                            <?php _e('Retrieve/update shipment companies and associated details for this store. These details are required if you wish to be able to update shipping/tracking info for individual orders.', 'sbwc-om'); ?>
+                        </i>
+                    </b>
+                </p>
+
+                <p>
+                    <button id="sbwc-om-retrieve-ship-cos" class="button button-primary button-large" data-nonce="<?php echo wp_create_nonce('sbwc fetch store shipping cos'); ?>" data-store="<?php echo $post->ID; ?>">
+                        <?php _e('Retrieve Shipping Company Details', 'sbwc-om'); ?>
+                    </button>
+                </p>
+
+            </div><!-- #sbwc-om-shop-shipment-tracking ends -->
+
         </div><!-- #sbwc-om-cpt-tabs ends -->
 
 <?php }
