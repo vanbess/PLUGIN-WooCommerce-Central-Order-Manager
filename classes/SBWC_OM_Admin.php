@@ -42,15 +42,14 @@ class SBWC_OM_Admin
         // schedule shipping csv processing via AJAX
         add_action('wp_ajax_sbwc_om_process_ship_csv', [__CLASS__, 'sbwc_om_process_ship_csv']);
         add_action('wp_ajax_nopriv_sbwc_om_process_ship_csv', [__CLASS__, 'sbwc_om_process_ship_csv']);
-        
+
         // retrieve store shipping companies via AJAX
         add_action('wp_ajax_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
         add_action('wp_ajax_nopriv_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
-        
+
         // update single order shipping
         add_action('wp_ajax_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
         add_action('wp_ajax_nopriv_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
-
     }
 
     /**
@@ -191,44 +190,61 @@ class SBWC_OM_Admin
         if (isset($_POST['sbwc-om-save-stores'])) :
 
             // store names
-            $store_names = $_POST['sbwc-om-store-name'];
+            $store_names = array_filter($_POST['sbwc-om-store-name']);
 
             // store urls
-            $store_urls = $_POST['sbwc-om-store-url'];
+            $store_urls = array_filter($_POST['sbwc-om-store-url']);
 
             // store consumer keys
-            $consumer_keys = $_POST['sbwc-om-store-key'];
+            $consumer_keys = array_filter($_POST['sbwc-om-store-key']);
 
             // store consumer secrets
-            $consumer_secrets = $_POST['sbwc-om-store-secret'];
+            $consumer_secrets = array_filter($_POST['sbwc-om-store-secret']);
 
             // array to hold inserted store ids
             $store_ids = [];
 
+            // retrieve existing store CPTs
+            $ext_stores = [];
+
+            $stores = get_posts([
+                'post_type'      => 'store',
+                'post_status'    => 'publish',
+                'posts_per_page' => -1
+            ]);
+
+            foreach ($stores as $index => $data) :
+                $ext_stores[] = $data->post_title;
+            endforeach;
+
             foreach ($store_names  as $index => $name) :
 
-                $store_ids[] = wp_insert_post([
-                    'post_type'    => 'store',
-                    'post_status'  => 'publish',
-                    'post_title'   => $name,
-                    'post_content' => '',
-                    'meta_input'   => [
-                        'store_url'       => $store_urls[$index],
-                        'store_cs_key'    => $consumer_keys[$index],
-                        'store_cs_secret' => $consumer_secrets[$index],
-                        'orders_fetched'  => 'no'
-                    ]
-                ]);
+                if (!in_array($name, $ext_stores)) :
+
+                    $store_ids[] = wp_insert_post([
+                        'post_type'    => 'store',
+                        'post_status'  => 'publish',
+                        'post_title'   => $name,
+                        'post_content' => '',
+                        'meta_input'   => [
+                            'store_url'       => $store_urls[$index],
+                            'store_cs_key'    => $consumer_keys[$index],
+                            'store_cs_secret' => $consumer_secrets[$index],
+                            'orders_fetched'  => 'no'
+                        ]
+                    ]);
+
+                endif;
 
             endforeach;
 
-            if (!empty($store_names)) : ?>
+            if (!empty($store_ids)) : ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php _e('Stores successfully saved.', 'sbwc-om'); ?></p>
                 </div>
             <?php else : ?>
                 <div class="notice notice-error is-dismissible">
-                    <p><?php _e('Failed to save stores. Please reload the page and try again.', 'sbwc-om'); ?></p>
+                    <p><?php _e('Failed to save stores, or submitted stores already exist.', 'sbwc-om'); ?></p>
                 </div>
         <?php endif;
 
