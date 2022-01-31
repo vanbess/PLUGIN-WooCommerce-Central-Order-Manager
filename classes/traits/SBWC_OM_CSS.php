@@ -9,6 +9,10 @@ trait SBWC_OM_CSS
     public static function sbwc_om_css()
     { ?>
         <style>
+            #sbwc-om-orders-list {
+                position: relative;
+            }
+
             h2.sbwc-om-admin-title {
                 background: white;
                 padding: 15px;
@@ -39,27 +43,9 @@ trait SBWC_OM_CSS
                 padding-bottom: 10px;
             }
 
-            #sbwc-om-show-import-info {
-                display: inline-block;
-                width: 20px;
-                height: 20px;
-                border: 1px solid;
-                text-align: center;
-                font-weight: bold;
-                text-decoration: none;
-                border-radius: 50%;
-                margin-left: 5px;
-            }
-
             #sbwc-om-store-settings-curr>tbody>tr>th {
                 text-align: left;
                 min-width: 140px;
-            }
-
-            #sbwc-om-orders-not-retrieved {
-                color: #d70000;
-                font-size: 13px;
-                letter-spacing: 0.5px;
             }
 
             #sbwc-om-order-lb-overlay {
@@ -79,7 +65,7 @@ trait SBWC_OM_CSS
                 padding: 30px;
                 z-index: 100;
                 width: 82vw;
-                top: -15%;
+                top: -5%;
             }
 
             #sbwc-om-order-lb>h3 {

@@ -109,7 +109,7 @@ class SBWC_OM_Admin
                 $rm_arr = explode(PHP_EOL, $readme);
 
                 foreach ($rm_arr as $index => $line) :
-                    echo $parsedown->text($line);
+                    echo __($parsedown->text($line), 'sbwc-om');
                 endforeach;
                 ?>
             </div>

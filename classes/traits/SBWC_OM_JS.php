@@ -70,8 +70,10 @@ trait SBWC_OM_JS
 
                     e.preventDefault();
 
-                    // zero out shipping inputs
+                    // zero out all values/text
                     $('#sbwc-om-ord-ship-tracking, #sbwc-om-ord-ship-co').val('');
+                    $('#sbwc-om-order-lb > h3').text('').append('<a href="#" title="<?php _e('Dismiss', 'sbwc-om'); ?>">x</a>');
+                    $('#sbwc-om-order-product-dataset').empty();
 
                     // scroll to top
                     window.scrollTo(0, 0);
@@ -138,14 +140,14 @@ trait SBWC_OM_JS
                 // **********************
                 // HIDE ORDER DATA MODAL
                 // **********************
-                $('#sbwc-om-order-lb-overlay, #sbwc-om-order-lb > h3 > a').on('click', function(e) {
+                $(document).on('click', '#sbwc-om-order-lb-overlay, #sbwc-om-order-lb > h3 > a',function(e) {
                     e.preventDefault();
                     $('#sbwc-om-order-lb, #sbwc-om-order-lb-overlay').hide();
                 });
 
-                // ********************
-                // UPDATE ORDER => TBC
-                // ********************
+                // *************
+                // UPDATE ORDER
+                // *************
                 $('#sbwc-om-update-order').on('click', function(e) {
                     e.preventDefault();
 

@@ -49,15 +49,19 @@ trait SBWC_OM_CPT_Metabox
                 // if no orders
                 if (!$orders) : ?>
 
-                    <p id="sbwc-om-orders-not-retrieved"><i><b><?php _e('Orders have not been retrieved or received for this store yet.', 'sbwc-om'); ?></b></i></p>
-
                     <p>
-                        <!-- retrieve orders via REST using Action Scheduler (done via admin AJAX) -->
-                        <button id="sbwc-om-retrieve-orders" class="button button-large button-primary" data-store-id="<?php echo $post->ID; ?>" data-nonce="<?php echo wp_create_nonce('sbwc om retrieve store orders'); ?>" title="<?php _e('click to retrieve latest orders', 'sbwc-om'); ?>">
+                        <b>
+                            <i>
+                                <?php _e('Click the button below to retrieve the latest 100 orders with status of processing for this store.', 'sbwc-om'); ?>
+                            </i>
+                        </b>
+                    </p>
+
+                    <!-- retrieve orders via REST using Action Scheduler (done via admin AJAX) -->
+                    <p>
+                        <button id="sbwc-om-retrieve-orders" class="button button-large button-primary" data-store-id="<?php echo $post->ID; ?>" data-nonce="<?php echo wp_create_nonce('sbwc om retrieve store orders'); ?>" title="<?php _e('click to retrieve latest 100 orders', 'sbwc-om'); ?>">
                             <?php _e('Retrieve Orders', 'sbwc-om'); ?>
                         </button>
-
-                        <a href="#" id="sbwc-om-show-import-info" title="<?php _e('This will only retrieve the latest 100 orders. If you would like to send all orders with a status of processing to the Order Manager, you can use the order manager settings plugin in your store\'s backend to do so.', 'sbwc-om'); ?>">i</a>
                     </p>
 
                     <!-- current connection settings -->
