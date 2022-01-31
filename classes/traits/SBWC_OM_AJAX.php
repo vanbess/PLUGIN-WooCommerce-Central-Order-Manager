@@ -142,7 +142,18 @@ trait SBWC_OM_AJAX
     // retrieve order data
     $ship_co_data = json_decode($response['body'], true);
 
-    wp_send_json($ship_co_data);
+    // save shipping company data if received and display success message, else display error
+    if (is_array($ship_co_data) && !isset($ship_co_data['message'])) :
+
+      $ship_cos_saved = update_post_meta($store_id, 'ship_cos', maybe_serialize($ship_co_data));
+
+      if (false !== $ship_cos_saved) :
+        wp_send_json(__('Shipping company data successfully retrieved and saved for this store.', 'sbwc-om'));
+      endif;
+
+    else :
+      wp_send_json(__($ship_co_data['message'], 'sbwc-om'),);
+    endif;
 
 
     wp_die();

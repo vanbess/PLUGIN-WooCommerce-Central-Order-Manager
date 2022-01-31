@@ -279,6 +279,21 @@ trait SBWC_OM_CSS
                 min-width: 360px;
                 box-shadow: 0px 2px 2px 2px #d3d3d347;
             }
+
+            #sbwc-om-ship-cos-table>thead>tr>th {
+                padding: 7px 15px;
+                border: 1px solid #ccc;
+            }
+
+            #sbwc-om-ship-cos-table>tbody>tr>td {
+                padding: 7px 15px;
+                text-align: center;
+                border: 1px solid #ccc;
+            }
+
+            #sbwc-om-retrieve-ship-cos {
+                margin-bottom: 15px;
+            }
         </style>
 <?php }
 }

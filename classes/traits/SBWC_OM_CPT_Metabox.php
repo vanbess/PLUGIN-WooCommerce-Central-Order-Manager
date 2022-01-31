@@ -457,7 +457,7 @@ trait SBWC_OM_CPT_Metabox
                 <p>
                     <b>
                         <i>
-                            <?php _e('Retrieve/update shipment companies and associated details for this store. These details are required if you wish to be able to update shipping/tracking info for individual orders.', 'sbwc-om'); ?>
+                            <?php _e('Retrieve shipment companies and associated details for this store. These details are required if you wish to be able to update shipping/tracking info for individual orders.', 'sbwc-om'); ?>
                         </i>
                     </b>
                 </p>
@@ -468,8 +468,44 @@ trait SBWC_OM_CPT_Metabox
                     </button>
                 </p>
 
-            </div><!-- #sbwc-om-shop-shipment-tracking ends -->
+                <?php
+                // display shipping companies
+                $ship_cos = maybe_unserialize(get_post_meta($post->ID, 'ship_cos', true));
 
+                if ($ship_cos) : ?>
+
+                    <div id="sbwc-om-retrieved-ship-cos">
+
+                        <p>
+                            <b>
+                                <?php _e('Current list of shipping companies for this shop:', 'sbwc-om'); ?>
+                            </b>
+                        </p>
+
+                        <table id="sbwc-om-ship-cos-table" class="wp-list-table fixed striped table-view-list">
+                            <thead>
+                                <tr>
+                                    <th><?php _e('ID', 'woocommerce'); ?></th>
+                                    <th><?php _e('Company Name', 'woocommerce'); ?></th>
+                                    <th><?php _e('URL', 'woocommerce'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($ship_cos as $index => $data) : ?>
+                                    <tr>
+                                        <td><?php echo $index; ?></td>
+                                        <td><?php echo $data['name']; ?></td>
+                                        <td><?php echo $data['url']; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                <?php endif; ?>
+
+            </div><!-- #sbwc-om-shop-shipment-tracking ends -->
         </div><!-- #sbwc-om-cpt-tabs ends -->
 
 <?php }

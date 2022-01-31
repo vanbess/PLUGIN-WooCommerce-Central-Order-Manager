@@ -143,9 +143,9 @@ trait SBWC_OM_JS
                     $('#sbwc-om-order-lb, #sbwc-om-order-lb-overlay').hide();
                 });
 
-                // *************
+                // ********************
                 // UPDATE ORDER => TBC
-                // *************
+                // ********************
                 $('#sbwc-om-update-order').on('click', function(e) {
                     e.preventDefault();
 
@@ -193,10 +193,9 @@ trait SBWC_OM_JS
                     }
 
                     $.post(ajaxurl, data, function(response) {
-                        console.log(response);
-                        
-                        // alert(response);
-                        // location.reload();
+                        // console.log(response);
+                        alert(response);
+                        location.reload();
                     });
 
                 });
