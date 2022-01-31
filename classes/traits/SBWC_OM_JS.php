@@ -70,6 +70,9 @@ trait SBWC_OM_JS
 
                     e.preventDefault();
 
+                    // zero out shipping inputs
+                    $('#sbwc-om-ord-ship-tracking, #sbwc-om-ord-ship-co').val('');
+
                     // scroll to top
                     window.scrollTo(0, 0);
 
@@ -82,9 +85,6 @@ trait SBWC_OM_JS
                     // decode order json
                     var order_data_b64 = $(this).data('order');
                     var order_json = JSON.parse(atob(order_data_b64));
-
-                    console.log(order_json);
-
 
                     // modal title
                     $('#sbwc-om-order-lb > h3').prepend('<?php _e('Details for Order No ', 'swbc-om') ?>' + order_no);
@@ -149,9 +149,29 @@ trait SBWC_OM_JS
                 $('#sbwc-om-update-order').on('click', function(e) {
                     e.preventDefault();
 
-                    if ($('#sbwc-om-ord-ship-tracking').val().length === 0) {
+                    // show error if required data not present
+                    if (!$('#sbwc-om-ord-ship-tracking').val() || !$('#sbwc-om-ord-ship-co').val()) {
                         $('#sbwc-om-update-error').show();
+                        return;
                     }
+                    
+                    // hide error if all field data present
+                    $('#sbwc-om-update-error').hide();
+
+                    // send ajax request to update order
+                    var data = {
+                        '_ajax_nonce': $(this).data('nonce'),
+                        'action': 'sbwc_om_update_single_order',
+                        'order_number': $('#sbwc-om-ord-no').text(),
+                        'store_id': $(this).data('store-id'),
+                        'track_no': $('#sbwc-om-ord-ship-tracking').val(),
+                        'ship_co_id': $('#sbwc-om-ord-ship-co').val()
+                    }
+
+                    $.post(ajaxurl, data, function(response) {
+                        alert(response);
+                        location.reload(); 
+                    });
 
                 });
 
@@ -173,7 +193,6 @@ trait SBWC_OM_JS
                     }
 
                     $.post(ajaxurl, data, function(response) {
-                        // console.log(response)
                         alert(response);
                         location.reload();
                     });
@@ -193,7 +212,6 @@ trait SBWC_OM_JS
                     }
 
                     $.post(ajaxurl, data, function(response) {
-                        // console.log(response);
                         alert(response);
                         location.reload();
                     });

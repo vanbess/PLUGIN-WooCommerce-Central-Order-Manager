@@ -41,8 +41,6 @@ trait SBWC_OM_CPT_Metabox
                 // retrieve shop orders
                 $orders = maybe_unserialize(get_post_meta($post->ID, 'store_orders', true));
 
-                // delete_post_meta($post->ID, 'store_orders');
-
                 // retrieve store connection data
                 $store_url       = get_post_meta($post->ID, 'store_url', true);
                 $store_cs_key    = get_post_meta($post->ID, 'store_cs_key', true);
@@ -261,23 +259,67 @@ trait SBWC_OM_CPT_Metabox
 
                                 <br>
 
-                                <!-- input label -->
-                                <p>
-                                    <label for="sbwc-om-ord-ship-tracking">
-                                        <b><i><?php _e('If this order has been shipped, enter the shipping tracking number below and hit the update button.', 'sbwc-om'); ?></i></b>
-                                    </label>
-                                </p>
+                                <?php
 
-                                <!-- shipping/tracking input -->
-                                <p>
-                                    <input type="text" name="sbwc-om-ord-ship-tracking" style="min-width: 350px;" id="sbwc-om-ord-ship-tracking" placeholder="<?php _e('order tracking number', 'sbwc-om'); ?>">
-                                </p>
+                                // show order shipping update input if store shipping companies present
+                                if (get_post_meta($post->ID, 'ship_cos', true)) :
+                                    $ship_cos = maybe_unserialize(get_post_meta($post->ID, 'ship_cos', true));
+                                ?>
 
-                                <!-- error -->
-                                <p id="sbwc-om-update-error" style="display: none;">
-                                    <?php _e('Order tracking number required before attempting to update.', 'sbwc-om'); ?>
-                                </p>
+                                    <div id="sbwc-om-order-ship-update-cont">
 
+                                        <h4>
+                                            <?php _e("UPDATE ORDER SHIPMENT INFO BELOW", 'sbwc-om'); ?>
+                                        </h4>
+                                        <hr>
+
+                                        <!-- tracking input label -->
+                                        <p>
+                                            <label for="sbwc-om-ord-ship-tracking">
+                                                <b><i><?php _e('Specify order tracking number:', 'sbwc-om'); ?></i></b>
+                                            </label>
+                                        </p>
+
+                                        <!-- shipping/tracking input -->
+                                        <p>
+                                            <input type="text" name="sbwc-om-ord-ship-tracking" style="min-width: 350px;" id="sbwc-om-ord-ship-tracking" placeholder="<?php _e('order tracking number', 'sbwc-om'); ?>">
+                                        </p>
+
+                                        <!-- shipping co select label -->
+                                        <p>
+                                            <label for="sbwc-om-ord-ship-co">
+                                                <b><i><?php _e('Select shipping company:', 'sbwc-om'); ?></i></b>
+                                            </label>
+                                        </p>
+
+                                        <!-- shipping company select -->
+                                        <p>
+                                            <select name="sbwc-om-ord-ship-co" id="sbwc-om-ord-ship-co">
+                                                <option value=""><?php _e('select shipping company', 'sbwc-om'); ?></option>
+                                                <?php foreach ($ship_cos as $id => $data) : ?>
+                                                    <option value="<?php echo $id; ?>">
+                                                        <?php echo $data['name']; ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </p>
+
+                                        <!-- error -->
+                                        <p id="sbwc-om-update-error" style="display: none;">
+                                            <?php _e('Order tracking number and/or shipping company required before attempting to update.', 'sbwc-om'); ?>
+                                        </p>
+
+                                        <!-- update order -->
+                                        <div id="sbwc-om-update-order-cont">
+                                            <!-- update order data -->
+                                            <button id="sbwc-om-update-order" class="button button-primary button-large button-block" data-store-id="<?php echo $post->ID; ?>" data-nonce="<?php echo wp_create_nonce('sbwc update single order'); ?>">
+                                                <?php _e('Update Order', 'sbwc-om'); ?>
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                <?php endif; ?>
                             </div><!-- order details -->
 
                             <!-- order products -->
@@ -325,13 +367,6 @@ trait SBWC_OM_CPT_Metabox
 
                             </div><!-- order products table container -->
 
-                            <!-- update order -->
-                            <div id="sbwc-om-update-order-cont">
-                                <!-- update order data -->
-                                <button id="sbwc-om-update-order" class="button button-primary button-large button-block" data-order-id="">
-                                    <?php _e('Update Order', 'sbwc-om'); ?>
-                                </button>
-                            </div>
 
                         </div><!-- order data body -->
                     </div><!-- order lightbox -->

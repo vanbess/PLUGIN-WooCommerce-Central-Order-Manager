@@ -79,7 +79,7 @@ trait SBWC_OM_CSS
                 padding: 30px;
                 z-index: 100;
                 width: 82vw;
-                top: -9%;
+                top: -15%;
             }
 
             #sbwc-om-order-lb>h3 {
@@ -293,6 +293,14 @@ trait SBWC_OM_CSS
 
             #sbwc-om-retrieve-ship-cos {
                 margin-bottom: 15px;
+            }
+
+            #sbwc-om-ord-ship-co {
+                width: 350px;
+            }
+
+            #sbwc-om-order-details-table {
+                width: 100%;
             }
         </style>
 <?php }

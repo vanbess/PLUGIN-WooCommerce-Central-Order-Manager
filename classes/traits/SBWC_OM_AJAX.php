@@ -155,6 +155,49 @@ trait SBWC_OM_AJAX
       wp_send_json(__($ship_co_data['message'], 'sbwc-om'),);
     endif;
 
+    wp_die();
+  }
+
+  /**
+   * Update shipping for single/individual orders
+   *
+   * @return void
+   */
+  public static function sbwc_om_update_single_order()
+  {
+
+    check_ajax_referer('sbwc update single order');
+
+    // retrieve store id
+    $store_id = $_POST['store_id'];
+
+    // retrieve tracking data
+    $order_number = $_POST['order_number'];
+    $track_no     = $_POST['track_no'];
+    $ship_co_id   = $_POST['ship_co_id'];
+
+    // retrieve store connection data
+    $store_url       = get_post_meta($store_id, 'store_url', true);
+    $store_cs_key    = get_post_meta($store_id, 'store_cs_key', true);
+    $store_cs_secret = get_post_meta($store_id, 'store_cs_secret', true);
+
+    // setup request url
+    $request_url = "$store_url/wp-json/wc/v3/update_single_order?order_no=$order_number&ship_co_id=$ship_co_id&track_no=$track_no&consumer_key=$store_cs_key&consumer_secret=$store_cs_secret";
+
+    // remote get
+    $response = wp_remote_post($request_url, [
+      'headers' => ['Content-Type' => 'application/json'],
+      'timeout' => 30,
+    ]);
+
+    // retrieve order data
+    $track_msg = $response['body'];
+
+    if ($track_msg) :
+      wp_send_json(__($track_msg, 'sbwc-om'));
+    else:
+      wp_send_json(__('Something went wrong. Please try again, or update tracking data for this order manually.'));
+    endif;
 
     wp_die();
   }

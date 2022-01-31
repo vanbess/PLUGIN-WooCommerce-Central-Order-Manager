@@ -46,6 +46,10 @@ class SBWC_OM_Admin
         // retrieve store shipping companies via AJAX
         add_action('wp_ajax_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
         add_action('wp_ajax_nopriv_sbwc_om_retrieve_shipping_cos', [__CLASS__, 'sbwc_om_retrieve_shipping_cos']);
+        
+        // update single order shipping
+        add_action('wp_ajax_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
+        add_action('wp_ajax_nopriv_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
 
     }
 
