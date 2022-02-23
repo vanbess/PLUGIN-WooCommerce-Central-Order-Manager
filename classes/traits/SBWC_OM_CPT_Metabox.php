@@ -20,7 +20,8 @@ trait SBWC_OM_CPT_Metabox
      * @return void
      */
     public static function sbwc_render_store_metabox()
-    { ?>
+    {
+?>
 
         <!-- cpt tabs cont -->
         <div id="sbwc-om-cpt-tabs">
@@ -47,7 +48,8 @@ trait SBWC_OM_CPT_Metabox
                 $store_cs_secret = get_post_meta($post->ID, 'store_cs_secret', true);
 
                 // if no orders
-                if (!$orders) : ?>
+                if (!$orders) :
+                ?>
 
                     <p>
                         <b>
@@ -85,9 +87,9 @@ trait SBWC_OM_CPT_Metabox
                     </table>
 
                 <?php
-
                 // if orders, display table
-                else : ?>
+                else :
+                ?>
 
                     <div id="sbwc-om-refresh-orders-cont">
 
@@ -98,12 +100,12 @@ trait SBWC_OM_CPT_Metabox
                             <?php _e('Refresh', 'sbwc-om'); ?>
                         </button>
 
-                        <?php if (get_post_meta($post->ID, 'retrieval_timestamp', true)) :
+                        <?php
+                        if (get_post_meta($post->ID, 'retrieval_timestamp', true)) :
 
                             // last request timestamp
                             $request_ts = get_post_meta($post->ID, 'retrieval_timestamp', true);
-                            $ts_msg = date('j F Y @ h:i:s', $request_ts) . __(' (server time)');
-
+                            $ts_msg     = date('j F Y @ h:i:s', $request_ts) . __(' (server time)');
                         ?>
                             <span id="sbwc-om-retrieval-timestamp">
                                 <?php _e("<b><i><u>Last retrieval request:</u> $ts_msg</b></i>", 'sbwc-om'); ?>
@@ -142,7 +144,14 @@ trait SBWC_OM_CPT_Metabox
                                     <!-- status -->
                                     <td>
                                         <?php
-                                        in_array($order_data['id'], get_post_meta($post->ID, 'updated_orders', true)) ? _e('<span title="order has been finalized" style="cursor: help;"><b>F</b></span>', 'sbwc-om') : _e('<span title="to be finalized" style="cursor: help;"><b><u>TBF</u></b></span>', 'sbwc-om');
+                                        $updated_orders = maybe_unserialize(get_post_meta($post->ID, 'updated_orders', true));
+
+                                        if (is_array($updated_orders) && in_array($order_data['id'], $updated_orders)) :
+                                            _e('<span title="order has been finalized" style="cursor: help;"><b><u>Finalized</u></b></span>', 'sbwc-om');
+                                        else :
+                                            _e('<span title="to be finalized" style="cursor: help;"><b><u>TBF</u></b></span>', 'sbwc-om');
+                                        endif;
+
                                         ?>
                                     </td>
 
@@ -264,7 +273,6 @@ trait SBWC_OM_CPT_Metabox
                                 <br>
 
                                 <?php
-
                                 // show order shipping update input if store shipping companies present
                                 if (get_post_meta($post->ID, 'ship_cos', true)) :
                                     $ship_cos = maybe_unserialize(get_post_meta($post->ID, 'ship_cos', true));
@@ -455,13 +463,13 @@ trait SBWC_OM_CPT_Metabox
                         <table id="sbwc-om-csv-data-table" class="wp-list-table widefat fixed striped table-view-list">
 
                             <?php
-
                             $csv_file = SBWC_OM_PATH . 'uploads/' . $csv_name;
-                            $csv = array_map('str_getcsv', file($csv_file));
+                            $csv      = array_map('str_getcsv', file($csv_file));
 
                             foreach ($csv as $index => $line_data) :
 
-                                if ($index === 0) : ?>
+                                if ($index === 0) :
+                            ?>
                                     <tr>
                                         <?php foreach ($line_data as $key => $hdata) : ?>
                                             <th>
@@ -479,7 +487,8 @@ trait SBWC_OM_CPT_Metabox
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </tr>
-                            <?php endif;
+                            <?php
+                                endif;
                             endforeach;
                             ?>
 
@@ -511,7 +520,8 @@ trait SBWC_OM_CPT_Metabox
                 // display shipping companies
                 $ship_cos = maybe_unserialize(get_post_meta($post->ID, 'ship_cos', true));
 
-                if ($ship_cos) : ?>
+                if ($ship_cos) :
+                ?>
 
                     <div id="sbwc-om-retrieved-ship-cos">
 
@@ -547,7 +557,8 @@ trait SBWC_OM_CPT_Metabox
             </div><!-- #sbwc-om-shop-shipment-tracking ends -->
         </div><!-- #sbwc-om-cpt-tabs ends -->
 
-<?php }
+<?php
+    }
 
     /**
      * Upload shipping CSV and insert associated processing flags to post meta
@@ -559,24 +570,28 @@ trait SBWC_OM_CPT_Metabox
     public static function sbwc_om_save_shipp_csv_to_post($post_id, $post)
     {
 
-        // check correct post type
-        if ($post->post_type !== 'store') :
-            return;
-        endif;
+        if (isset($_POST['sbwc-om-sub-ship-csv']) || isset($_POST['sbwc-om-upload-shipping-csv'])) :
 
-        // move uploaded CSV
-        $target_dir = SBWC_OM_PATH . "uploads/";
-        $time_stamp = date('j_F_Y_h:i:s', strtotime('now'));
-        $post_title = strtolower($post->post_title);
-        $post_title = str_replace(' ', '_', $post_title);
-        $target_file = $target_dir . $post_title . '_' . $time_stamp . '.csv';
+            // check correct post type
+            if ($post->post_type !== 'store') :
+                return;
+            endif;
 
-        // if file successfully moved/uploaded
-        if (move_uploaded_file($_FILES["sbwc-om-upload-shipping-csv"]["tmp_name"], $target_file)) :
+            // move uploaded CSV
+            $target_dir  = SBWC_OM_PATH . "uploads/";
+            $time_stamp  = date('j_F_Y_h:i:s', strtotime('now'));
+            $post_title  = strtolower($post->post_title);
+            $post_title  = str_replace(' ', '_', $post_title);
+            $target_file = $target_dir . $post_title . '_' . $time_stamp . '.csv';
 
-            // update required post meta for processing via AS
-            update_post_meta($post_id, 'last_uploaded_csv', $post_title . '_' . $time_stamp . '.csv');
-            update_post_meta($post_id, 'last_file_processed', 'N/A');
+            // if file successfully moved/uploaded
+            if (move_uploaded_file($_FILES["sbwc-om-upload-shipping-csv"]["tmp_name"], $target_file)) :
+
+                // update required post meta for processing via AS
+                update_post_meta($post_id, 'last_uploaded_csv', $post_title . '_' . $time_stamp . '.csv');
+                update_post_meta($post_id, 'last_file_processed', 'N/A');
+
+            endif;
 
         endif;
     }

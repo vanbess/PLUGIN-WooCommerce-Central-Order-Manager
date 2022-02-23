@@ -165,6 +165,7 @@ trait SBWC_OM_JS
                         '_ajax_nonce': $(this).data('nonce'),
                         'action': 'sbwc_om_update_single_order',
                         'order_number': $('#sbwc-om-ord-no').text(),
+                        'order_id': $('#sbwc-om-ord-id').text(),
                         'store_id': $(this).data('store-id'),
                         'track_no': $('#sbwc-om-ord-ship-tracking').val(),
                         'ship_co_id': $('#sbwc-om-ord-ship-co').val()

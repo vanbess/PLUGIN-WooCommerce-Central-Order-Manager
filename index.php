@@ -21,6 +21,7 @@ include SBWC_OM_PATH . 'classes/traits/SBWC_OM_JS.php';
 include SBWC_OM_PATH . 'classes/traits/SBWC_OM_CPT.php';
 include SBWC_OM_PATH . 'classes/traits/SBWC_OM_CPT_Metabox.php';
 include SBWC_OM_PATH . 'classes/traits/SBWC_OM_AJAX.php';
+include SBWC_OM_PATH . 'classes/traits/SBWC_OM_All_Orders.php';
 include SBWC_OM_PATH . 'classes/SBWC_OM_Admin.php';
 
 // action scheduler function to remote update orders

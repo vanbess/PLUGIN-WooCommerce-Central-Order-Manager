@@ -3,7 +3,6 @@
 /**
  * Renders admin page for order management
  */
-
 class SBWC_OM_Admin
 {
 
@@ -11,7 +10,8 @@ class SBWC_OM_Admin
         SBWC_OM_JS,
         SBWC_OM_CPT,
         SBWC_OM_CPT_Metabox,
-        SBWC_OM_AJAX;
+        SBWC_OM_AJAX,
+        SBWC_OM_All_Orders;
 
     /**
      * Class init
@@ -50,6 +50,10 @@ class SBWC_OM_Admin
         // update single order shipping
         add_action('wp_ajax_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
         add_action('wp_ajax_nopriv_sbwc_om_update_single_order', [__CLASS__, 'sbwc_om_update_single_order']);
+
+        // update single order shipping for ALL orders list
+        add_action('wp_ajax_sbwc_om_update_single_order_all', [__CLASS__, 'sbwc_om_update_single_order_all']);
+        add_action('wp_ajax_nopriv_sbwc_om_update_single_order_all', [__CLASS__, 'sbwc_om_update_single_order_all']);
     }
 
     /**
@@ -63,6 +67,7 @@ class SBWC_OM_Admin
         wp_enqueue_style('sbwc-jquery-ui', SBWC_OM_URL . 'assets/css/jquery.ui-min.css', [], false);
         wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('sbwc-om-admin', self::sbwc_om_js(), ['jquery', 'jquery-ui-tabs'], false, true);
+        wp_enqueue_script('sbwc-view-order-all', self::order_data_modal_js(), ['jquery'], false, true);
     }
 
     /**
@@ -75,6 +80,9 @@ class SBWC_OM_Admin
         // main admin page which houses store CPTs
         add_menu_page(__('Order Manager', 'sbwc-om'), __('Order Manager', 'sbwc-om'), 'manage_options', 'sbwc-order-manager', '', 'dashicons-database-view', 10);
 
+        // global order list page
+        add_submenu_page('sbwc-order-manager', __('Combined Store Orders List', 'sbwc-om'), __('All Store Orders', 'sbwc-om'), 'manage_options', 'sbwc-om-all-orders', [__CLASS__, 'sbwc_om_combined_orders'], null);
+
         // store connections page
         add_submenu_page('sbwc-order-manager', __('Store Connection Settings', 'sbwc-om'), __('Connect Stores', 'sbwc-om'), 'manage_options', 'sbwc-om-stores', [__CLASS__, 'sbwc_om_render_stores'], null);
 
@@ -86,6 +94,43 @@ class SBWC_OM_Admin
     }
 
     /**
+     * Renders combined orders list
+     * 
+     * @global string $title - page title
+     */
+    public static function sbwc_om_combined_orders()
+    {
+
+        global $title;
+?>
+
+        <div id="sbwc-om-all-orders">
+
+            <h2 class="sbwc-om-admin-title">
+                <?php echo $title; ?>
+            </h2>
+
+            <!-- instructions -->
+            <p>
+                <i>
+                    <b>
+                        <?php _e('This is a combined view of all store orders. Only orders which have been previously retrieved for individual stores will show up here.', 'sbwc-om'); ?>
+                    </b>
+                </i>
+            </p>
+
+            <div id="sbwc-om-all-orders-cont">
+                <?php
+                self::orders_list();
+                ?>
+            </div>
+
+        </div>
+
+    <?php
+    }
+
+    /**
      * Render README page
      *
      * @return void
@@ -93,7 +138,8 @@ class SBWC_OM_Admin
     public static function sbwc_om_render_readme()
     {
 
-        global $title; ?>
+        global $title;
+    ?>
 
         <div id="sbwc-om-readme">
 
@@ -104,8 +150,8 @@ class SBWC_OM_Admin
             <div id="sbwc-om-readme-text-cont">
                 <?php
                 $parsedown = new Parsedown();
-                $readme = file_get_contents(SBWC_OM_PATH . 'README.md',);
-                $rm_arr = explode(PHP_EOL, $readme);
+                $readme    = file_get_contents(SBWC_OM_PATH . 'README.md',);
+                $rm_arr    = explode(PHP_EOL, $readme);
 
                 foreach ($rm_arr as $index => $line) :
                     echo __($parsedown->text($line), 'sbwc-om');
@@ -115,7 +161,8 @@ class SBWC_OM_Admin
 
         </div>
 
-    <?php }
+    <?php
+    }
 
     /**
      * Render main admin page which displays orders based on connected stores
@@ -160,22 +207,26 @@ class SBWC_OM_Admin
                         $log_file = str_replace('"', '', file_get_contents(SBWC_OM_PATH . 'log/schedule-history.txt'));
                         $log_data = explode(PHP_EOL, $log_file);
                         $log_data = array_filter($log_data);
-                        $counter = 1;
+                        $counter  = 1;
 
-                        foreach ($log_data as $line_data) : ?>
+                        foreach ($log_data as $line_data) :
+                        ?>
                             <tr>
                                 <td><b><?php echo $counter; ?></b></td>
                                 <td><?php echo $line_data; ?></td>
                             </tr>
-                        <?php $counter++;
-                        endforeach; ?>
+                        <?php
+                            $counter++;
+                        endforeach;
+                        ?>
                     </tbody>
                 </table>
 
             </div>
         </div>
 
-        <?php }
+        <?php
+    }
 
     /**
      * Render admin page which displays stores connected to Order Manager and allows adding additional stores
@@ -217,7 +268,7 @@ class SBWC_OM_Admin
                 $ext_stores[] = $data->post_title;
             endforeach;
 
-            foreach ($store_names  as $index => $name) :
+            foreach ($store_names as $index => $name) :
 
                 if (!in_array($name, $ext_stores)) :
 
@@ -230,7 +281,6 @@ class SBWC_OM_Admin
                             'store_url'       => $store_urls[$index],
                             'store_cs_key'    => $consumer_keys[$index],
                             'store_cs_secret' => $consumer_secrets[$index],
-                            'orders_fetched'  => 'no'
                         ]
                     ]);
 
@@ -238,7 +288,8 @@ class SBWC_OM_Admin
 
             endforeach;
 
-            if (!empty($store_ids)) : ?>
+            if (!empty($store_ids)) :
+        ?>
                 <div class="notice notice-success is-dismissible">
                     <p><?php _e('Stores successfully saved.', 'sbwc-om'); ?></p>
                 </div>
@@ -246,10 +297,10 @@ class SBWC_OM_Admin
                 <div class="notice notice-error is-dismissible">
                     <p><?php _e('Failed to save stores, or submitted stores already exist.', 'sbwc-om'); ?></p>
                 </div>
-        <?php endif;
+        <?php
+            endif;
 
         endif;
-
         ?>
 
         <div id="sbwc-om-stores">
@@ -282,7 +333,8 @@ class SBWC_OM_Admin
 
                     if ($stores->have_posts()) :
 
-                        while ($stores->have_posts()) : $stores->the_post(); ?>
+                        while ($stores->have_posts()) : $stores->the_post();
+                    ?>
                             <div class="sbwc-om-store-inputs">
 
                                 <!-- store name -->
@@ -304,10 +356,10 @@ class SBWC_OM_Admin
                                 <button class="button button-secondary button-small sbwc-om-rem-store" title="<?php _e('remove store', 'sbwc-om'); ?>" data-store-id="<?php echo get_the_ID(); ?>">-</button>
 
                             </div>
-                    <?php endwhile;
+                    <?php
+                        endwhile;
 
                     endif;
-
                     ?>
 
                     <div class="sbwc-om-store-inputs">
@@ -343,7 +395,8 @@ class SBWC_OM_Admin
 
             </form>
 
-    <?php }
+    <?php
+    }
 }
 
 SBWC_OM_Admin::init();
