@@ -1,4 +1,4 @@
-# SBWC Order Manager README
+# PLUGIN: Order Manager for WooCommerce
 
 ## Overview & Prerequisites
 
